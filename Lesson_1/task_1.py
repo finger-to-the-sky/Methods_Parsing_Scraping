@@ -16,6 +16,3 @@ def get_repos_list(username : str, filename : str):
 
 
 
-
-
-
