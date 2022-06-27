@@ -115,14 +115,9 @@ class workua:
 
 
 total_result = workua()
-print(total_result.name_vacantion())
-print(total_result.parse_salary())
-print(total_result.find_links())
-print()
 
-pprint(total_result.run())
 
-total_result.create_file()
+
 
 
 
