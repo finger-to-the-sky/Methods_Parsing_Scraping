@@ -3,14 +3,19 @@ from pymongo import MongoClient
 from Lesson_2.task_1 import total_result
 
 
-def add_on_mongo(MONGO_HOST, MONGO_PORT, MONGO_DB, MONGO_COLLECTION):
+def only_new_vacantions(MONGO_HOST, MONGO_PORT, MONGO_DB, MONGO_COLLECTION):
     with MongoClient(MONGO_HOST, MONGO_PORT) as client:
-
         vacanties = total_result.run()
         db = client[MONGO_DB]
         col_vacanties = db[MONGO_COLLECTION]
 
+        count = 0
         for vacancy in vacanties:
-            col_vacanties.insert_one(vacancy)
 
-    print(f'Добавлено {len(vacanties)} новых вакансий')
+            if col_vacanties.find_one(vacancy):
+                pass
+            else:
+                col_vacanties.insert_one(vacancy)
+
+    print(f'Добавлено {count} новых вакансий')
+
