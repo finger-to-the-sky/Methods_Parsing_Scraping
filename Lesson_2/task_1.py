@@ -105,11 +105,13 @@ class workua:
                 vacanties = {'name': names[i], 'salary': pays[i], 'link': links[i], 'site': 'https://www.work.ua/ru/'}
                 result_list.append(vacanties)
 
-            with open (f'{self.POSITION}.json', 'a', encoding='utf-8') as file:
-                json.dump(result_list, file, indent=4, ensure_ascii=False)
-
             return result_list
 
+    def create_file(self):
+        all_vacantion = self.run()
+
+        with open(f'{self.POSITION}.json', 'a', encoding='utf-8') as file:
+            json.dump(all_vacantion, file, indent=4, ensure_ascii=False)
 
 
 total_result = workua()
@@ -119,6 +121,8 @@ print(total_result.find_links())
 print()
 
 pprint(total_result.run())
+
+total_result.create_file()
 
 
 
