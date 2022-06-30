@@ -58,29 +58,52 @@ class workua:
             if 'грн' in i or '$' in i or '€' in i or 'руб' in i:
                 if '–' in i:
                     min_salary = re.compile(r'\d+\u202f\d+|\d+').findall(i)[0].encode("ascii", "ignore").decode()
-                    max_salary = re.compile(r'\u2009\d+\u202f\d+\D').findall(i)[0].encode("ascii", "ignore").decode()
-                    currency = re.findall(r'\w+', i)[-1]
+                    max_salary = re.compile(r'\u2009\d+\u202f\d+\D').findall(i)[0].encode("ascii","ignore").decode()
 
-                    result = f'{min_salary}-{max_salary} {currency}'
+                    result = f'{min_salary},{max_salary}'
 
                 else:
                     min_salary = re.compile(r'\d+\u202f\d+|\d+').findall(i)[0].encode("ascii", "ignore").decode()
-                    currency = re.findall(r'\w+', i)[-1]
 
-                    result = f'{min_salary} {currency}'
+                    result = f'{min_salary},'
 
                 salaries.append(result)
             else:
                 salaries.append('None')
 
-
         for i in salaries:
-
-            if currency in i:
+            if  i != 'None':
                 salaries.pop(salaries.index(i) + 1)
 
         return salaries
 
+    def min_salaries(self):
+        min_salaries = self.parse_salary()
+        for i in min_salaries:
+            if i != 'None':
+                stry = i[:i.index(',')]
+                min_salaries[min_salaries.index(i)] = int(stry)
+
+        return min_salaries
+
+        return min_salaries
+
+    def max_salaries(self):
+        max_salaries = self.parse_salary()
+        for i in max_salaries:
+            if i != 'None':
+                stry = i[i.index(',')+1:]
+
+                if stry == '':
+                    max_salaries[max_salaries.index(i)] = 'None'
+
+                else:
+                    max_salaries[max_salaries.index(i)] = int(stry)
+            else:
+                stry = 'None'
+
+
+        return max_salaries
 
 
     def find_links(self):
@@ -98,11 +121,20 @@ class workua:
         if names == []:
             return 'Не удалось получить наименование вакансий. Пожалуйста, проверьте правильность вводимых данных!'
         else:
-            pays = self.parse_salary()
+
+            pays_min = self.min_salaries()
+            pays_max = self.max_salaries()
             links = self.find_links()
 
             for i in range(len(names)):
-                vacanties = {'name': names[i], 'salary': pays[i], 'link': links[i], 'site': 'https://www.work.ua/ru/'}
+                if pays_min[i] != 'None' and pays_max[i] == 'None':
+
+                    vacanties = {'name': names[i], 'average_salary': pays_min[i], 'link': links[i],
+                             'site': 'https://www.work.ua/ru/'}
+                else:
+                    vacanties = {'name': names[i], 'salary_min': pays_min[i], 'salary_max': pays_max[i],
+                                 'link': links[i],
+                                 'site': 'https://www.work.ua/ru/'}
                 result_list.append(vacanties)
 
             return result_list

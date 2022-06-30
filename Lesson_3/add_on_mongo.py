@@ -14,3 +14,5 @@ def add_on_mongo(MONGO_HOST, MONGO_PORT, MONGO_DB, MONGO_COLLECTION):
             col_vacanties.insert_one(vacancy)
 
     print(f'Добавлено {len(vacanties)} новых вакансий')
+
+a = add_on_mongo('localhost', 27017, 'workua', 'vacantions')
