@@ -15,7 +15,14 @@ def find_salary_vacantions(MONGO_HOST, MONGO_PORT, MONGO_DB, MONGO_COLLECTION,):
             cursor = col_vacanties.find({'salary_min': 'None'})
         elif size_payment != '-':
             try:
-                cursor = col_vacanties.find({'salary_min': {'$gt': int(size_payment)}})
+                cursor = col_vacanties.find({'$or':
+                                                 [
+                                                     {'salary_min': {'$gt': int(size_payment)}},
+                                                     {'average_salary': {'$gt':int(size_payment)}}
+                                                      ]
+                })
+                cursor2 = col_vacanties.find({'average_salary': {'$gt':int(size_payment)}})
+
             except ValueError:
                 print('Неверно введены данные!')
                 return None
