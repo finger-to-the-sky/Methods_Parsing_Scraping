@@ -63,7 +63,7 @@ class vcru():
         self.driver.get(f"https://vc.ru/search/v2/content/relevant?query={find}")
 
         count = 0
-        n = int(input('Введите кол-во страниц, которых хотите получить: '))
+        n = int(input('Введите кол-во постов, которых хотите получить: '))
         while count < n:
             authors = self.driver.find_elements(By.XPATH, ".//a[contains(@data-gtm, 'Author Name')]"
                                                      "//div[contains(@class, 'content-header-author__name')]")
