@@ -16,13 +16,18 @@
 # 5) (Дополнительно, необязательно). Придумайте как можно скроллить "до конца" до тех пор пока посты не перестанут
 # добавляться
 
+# Так как у меня сайт vk.com заблокирован? я возьму аналогичный  vc.ru.
+# Вместо группы, я буду работать над поисковым результатом, тоесть проводить поиск по хештегам и
+# получать с них информацию, а затем сохранять результат в БД Mongo.
+
+
 import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from pymongo import MongoClient
-
+from pprint import pprint
 
 class vcru():
 
@@ -35,8 +40,9 @@ class vcru():
         self.driver.get(url)
         search = self.driver.find_elements(By.XPATH, ".//input[contains(@class, 'v-text-input__input')]")
         search[0].click()
-        search[0].send_keys(search_text, Keys.ENTER)
         time.sleep(1)
+        search[0].send_keys(search_text, Keys.ENTER)
+
 
 
     def save_search(self, MONGO_HOST, MONGO_PORT, MONGO_DB, MONGO_COLLECTION, info):
@@ -47,12 +53,17 @@ class vcru():
 
 
     def parse_result_search(self):
+        print('После того как вы введете необходимые данные, вам нужно будет переместится в созданное окно браузера!'
+              '\nРекомедуем вам сделать двойное окно, программы и браузера!'
+              '\nТак вы не пропустите сообщение об окончании работы:)')
+
         find = input('Поиск: ')
         self.search(find)
+
         self.driver.get(f"https://vc.ru/search/v2/content/relevant?query={find}")
 
         count = 0
-        n = 15
+        n = int(input('Введите кол-во страниц, которых хотите получить: '))
         while count < n:
             authors = self.driver.find_elements(By.XPATH, ".//a[contains(@data-gtm, 'Author Name')]"
                                                      "//div[contains(@class, 'content-header-author__name')]")
@@ -65,28 +76,28 @@ class vcru():
 
             actions = ActionChains(self.driver)
             actions.move_to_element(authors[-1])
+            time.sleep(3)
             actions.perform()
 
-            time.sleep(2)
             count = len(authors)
 
-            for i in range(n):
-                info = {}
-                info['author'] = authors[i].text
-                info['post_name'] = names_posts_list[i].text
-                info['text_post'] = text_post[i].text
-                info['date'] = date[i].text
-                info['count_comments'] = comments[i].text
-                info['link'] = link[i].get_attribute('href')
+        for i in range(n):
+            info = {}
+            info['author'] = authors[i].text
+            info['post_name'] = names_posts_list[i].text
+            info['text_post'] = text_post[i].text
+            info['date'] = date[i].text
+            info['count_comments'] = comments[i].text
+            info['link'] = link[i].get_attribute('href')
 
-                self.save_search('localhost', 27017, 'vc_ru', 'result_search', info)
-        print('Ваши данные были успешно загруженны')
-
+            self.save_search('localhost', 27017, 'vc_ru', 'result_search', info)
+        print('Ваши данные были успешно загруженны!')
+        self.driver.quit()
 
 DRIVER_PATH = './chromedriver'
 options = webdriver.ChromeOptions()
-options.add_argument("--start-maximized")
-driver = webdriver.Chrome(DRIVER_PATH, options=options)
+options.add_argument("--window-size=1000,1000")
 
+driver = webdriver.Chrome(DRIVER_PATH, options=options)
 v = vcru(driver)
 v.parse_result_search()
