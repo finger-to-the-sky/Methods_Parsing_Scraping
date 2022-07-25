@@ -20,6 +20,7 @@ jmespath==1.0.1
 lxml==4.9.0
 outcome==1.2.0
 parsel==1.6.0
+Pillow==9.2.0
 Protego==0.2.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
@@ -48,5 +49,6 @@ typing_extensions==4.3.0
 update==0.0.1
 urllib3==1.26.9
 w3lib==1.22.0
+wget==3.2
 wsproto==1.1.0
 zope.interface==5.4.0
