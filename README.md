@@ -6,4 +6,4 @@
 - Lesson_4 - Парсинг HTML XPATH
 - Lesson_5 - Selenium в Python
 - Lesson_6 - Фреймворк Scrapy
-- Lesson_6 - Скачивание данных и фото Scrapy
+- Lesson_7 - Скачивание данных и фото Scrapy
